@@ -286,12 +286,10 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         // Pre-fill first word instantly, then start erasing after pause
-        setTimeout(() => {
-            render(words[0]);
-            charIndex = words[0].length;
-            deleting = true;
-            setTimeout(type, 2200);
-        }, 1000);
+        render(words[0]);
+        charIndex = words[0].length;
+        deleting = true;
+        setTimeout(type, 2200);
     }
 
 });

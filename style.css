@@ -489,6 +489,113 @@ button {
 }
 
 /* ==========================================================================
+   BENEFITS / BENEFÍCIOS
+   ========================================================================== */
+.benefits__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--s-6);
+    margin-top: var(--s-8);
+}
+
+.benefits__item {
+    background-color: var(--c-bg); /* Contrast with bg-darker */
+    padding: var(--s-4) var(--s-4) var(--s-4) var(--s-6);
+    border-left: 6px solid var(--c-accent);
+    box-shadow: inset 0 0 0 1px var(--c-border);
+    transition: transform var(--transition-fast);
+}
+
+.benefits__item:hover {
+    transform: translateX(8px);
+}
+
+.benefits__icon {
+    color: var(--c-accent);
+    margin-bottom: var(--s-4);
+}
+
+.benefits__item h3 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: var(--s-2);
+}
+
+.benefits__item p {
+    color: var(--c-text-muted);
+    line-height: 1.5;
+}
+
+/* ==========================================================================
+   FAQ
+   ========================================================================== */
+.faq__list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-4);
+    margin-top: var(--s-8);
+}
+
+.faq__item {
+    background-color: var(--c-bg);
+    border: 1px solid var(--c-border);
+    transition: border-color var(--transition-fast);
+}
+
+.faq__item:hover {
+    border-color: var(--c-accent);
+}
+
+.faq__question {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--s-4);
+    font-size: 1.125rem;
+    font-weight: 700;
+    cursor: pointer;
+    list-style: none; /* remove default marker */
+}
+
+/* Remove default marker in Safari */
+.faq__question::-webkit-details-marker {
+    display: none;
+}
+
+.faq__toggle {
+    font-size: 1.5rem;
+    font-weight: 400;
+    color: var(--c-accent);
+    transition: transform var(--transition-fast);
+}
+
+.faq__item[open] .faq__toggle {
+    transform: rotate(45deg);
+}
+
+.faq__answer {
+    padding: var(--s-4);
+    padding-top: 0;
+    color: var(--c-text-muted);
+    line-height: 1.6;
+}
+
+.faq__item[open] .faq__answer {
+    animation: fadeInDown var(--transition-fast);
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ==========================================================================
    CTA
    ========================================================================== */
 .cta {
@@ -595,8 +702,9 @@ button {
         align-items: center;
     }
 
-    /* Services */
-    .services__grid {
+    /* Services & Benefits */
+    .services__grid,
+    .benefits__grid {
         grid-template-columns: repeat(2, 1fr);
     }
 

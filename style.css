@@ -777,6 +777,7 @@ button {
     position: relative;
     height: 1.3em;
     line-height: 1;
+    margin-bottom: 0.8em;
 }
 
 /* Typed word — absolutely positioned so it never affects surrounding layout */

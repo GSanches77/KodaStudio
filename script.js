@@ -293,3 +293,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 });
+
+// Google Tag Manager Event Tracking
+function trackWhatsAppClick() {
+    gtag('event', 'whatsapp_click', {
+        event_category: 'Contato',
+        event_label: 'Botao WhatsApp'
+    });
+}

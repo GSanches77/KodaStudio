@@ -112,13 +112,25 @@ class UXAuditor:
         filename = os.path.basename(filepath)
 
         # Pre-calculate common flags
-        has_long_text = bool(re.search(r'<p|<div.*class=.*text|article|<span.*text', content, re.IGNORECASE))
-        has_form = bool(re.search(r'<form|<input|password|credit|card|payment', content, re.IGNORECASE))
-        complex_elements = len(re.findall(r'<input|<select|<textarea|<option', content, re.IGNORECASE))
+        is_html = filepath.endswith(('.html', '.tsx', '.jsx', '.vue', '.svelte'))
+        is_css = filepath.endswith('.css')
+
+        has_long_text = bool(re.search(r'<p|<div.*class=.*text|article|<span.*text', content, re.IGNORECASE)) if not is_css else False
+        has_form = bool(re.search(r'<form|<input|password|credit|card|payment', content, re.IGNORECASE)) if not is_css else False
+        complex_elements = len(re.findall(r'<input|<select|<textarea|<option', content, re.IGNORECASE)) if not is_css else 0
 
         # --- 1. PSYCHOLOGY LAWS ---
         # Hick's Law
-        nav_items = len(re.findall(r'<NavLink|<Link|<a\s+href|nav-item', content, re.IGNORECASE))
+        if is_html:
+            nav_match = re.search(r'<nav[^>]*>(.*?)</nav>', content, re.DOTALL | re.IGNORECASE)
+            if nav_match:
+                nav_content = nav_match.group(1)
+                nav_items = len(re.findall(r'<NavLink|<Link|<a\s+href|nav-item', nav_content, re.IGNORECASE))
+            else:
+                nav_items = len(re.findall(r'<NavLink|<Link|<a\s+href|nav-item', content, re.IGNORECASE))
+        else:
+            nav_items = 0
+
         if nav_items > 7:
             self.issues.append(f"[Hick's Law] {filename}: {nav_items} nav items (Max 7)")
         
@@ -208,7 +220,7 @@ class UXAuditor:
             self.warnings.append(f"[Cognitive Load] {filename}: High visual noise detected. Many colors and borders increase cognitive load.")
 
         # Familiar patterns
-        if has_form:
+        if is_html and has_form:
             has_standard_labels = bool(re.search(r'<label|placeholder|aria-label', content, re.IGNORECASE))
             if not has_standard_labels:
                 self.issues.append(f"[Cognitive Load] {filename}: Form inputs without labels. Use <label> for accessibility and clarity.")
@@ -647,12 +659,13 @@ class UXAuditor:
             self.warnings.append(f"[Motion] {filename}: Particle effects detected. Ensure fallback or reduced-quality option for mobile devices.")
 
         # 6.6 Scroll-Driven Animation Performance
-        has_scroll_driven = bool(re.search(r'IntersectionObserver.*animate|scroll.*progress|view-timeline', content))
-        if has_scroll_driven:
-            # Check for throttling/debouncing
-            has_throttle = bool(re.search(r'throttle|debounce|requestAnimationFrame', content))
-            if not has_throttle:
-                self.issues.append(f"[Motion] {filename}: Scroll-driven animation without throttling. Add requestAnimationFrame for 60fps.")
+        if not is_css:
+            has_scroll_driven = bool(re.search(r'IntersectionObserver.*animate|scroll.*progress|view-timeline', content))
+            if has_scroll_driven:
+                # Check for throttling/debouncing
+                has_throttle = bool(re.search(r'throttle|debounce|requestAnimationFrame', content))
+                if not has_throttle:
+                    self.issues.append(f"[Motion] {filename}: Scroll-driven animation without throttling. Add requestAnimationFrame for 60fps.")
 
         # 6.7 Motion Decision Tree - Context Check
         # Check if animation serves purpose (not just decoration)

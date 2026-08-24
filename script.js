@@ -250,14 +250,13 @@ document.addEventListener('DOMContentLoaded', () => {
     // =========================================================================
     if (!prefersReduced) {
         const accentEl = document.querySelector('.hero__typed');
-        // \n marks where the line break happens — renders as <br> via innerHTML
-        const words = ['do seu\nnegócio', 'da sua\nmarca', 'da sua\nempresa', 'do seu\nfuturo'];
+        const words = ['do seu negócio', 'da sua marca', 'da sua empresa', 'do seu futuro'];
         let wordIndex = 0;
         let charIndex = 0;
         let deleting = false;
 
         const render = (str) => {
-            accentEl.innerHTML = str.replace('\n', '<br>');
+            accentEl.textContent = str;
         };
 
         const type = () => {

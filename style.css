@@ -47,8 +47,6 @@ html {
     scroll-behavior: smooth;
     font-size: 16px;
     width: 100%;
-    max-width: 100%;
-    overflow-x: hidden;
 }
 
 body {
@@ -57,7 +55,6 @@ body {
     color: var(--c-text);
     line-height: 1.6;
     width: 100%;
-    max-width: 100%;
     overflow-x: hidden;
     position: relative;
     -webkit-font-smoothing: antialiased;
@@ -65,7 +62,6 @@ body {
 
 main {
     width: 100%;
-    max-width: 100%;
     overflow-x: hidden;
 }
 
@@ -741,11 +737,6 @@ button {
 
 /* Mobile Nav Active State & Overflow Safeguards */
 @media (max-width: 767px) {
-    html, body, main {
-        max-width: 100vw;
-        overflow-x: hidden;
-    }
-
     .container {
         padding: 0 var(--s-2);
     }
@@ -777,8 +768,10 @@ button {
     }
 
     .hero__typed-wrap {
-        height: auto;
-        min-height: 2.4em;
+        height: 1.15em;
+        min-height: 1.15em;
+        margin-top: 0.1em;
+        margin-bottom: 0.15em;
         word-break: break-word;
     }
 
@@ -931,9 +924,10 @@ button {
 .hero__typed-wrap {
     display: block;
     position: relative;
-    height: 1.3em;
-    line-height: 1;
-    margin-bottom: 0.8em;
+    height: 1.15em;
+    line-height: 1.1;
+    margin-top: 0.1em;
+    margin-bottom: 0.15em;
 }
 
 /* Typed word — absolutely positioned so it never affects surrounding layout */
@@ -988,18 +982,25 @@ button {
     box-shadow: 6px 6px 0px 0px rgba(0, 218, 255, 0.15);
 }
 
-.case-card__browser {
-    background-color: #0d0d1a;
+.case-card__window {
+    background-color: #0c0c16;
     border-bottom: 1px solid var(--c-border);
-    padding: var(--s-1) var(--s-2);
+    overflow: hidden;
+}
+
+.case-card__browser {
+    background-color: #121222;
+    padding: 8px 12px;
     display: flex;
     align-items: center;
-    gap: var(--s-2);
+    gap: 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .case-card__dots {
     display: flex;
     gap: 5px;
+    flex-shrink: 0;
 }
 
 .case-card__dots span {
@@ -1021,12 +1022,12 @@ button {
     display: flex;
     align-items: center;
     gap: 6px;
-    background-color: rgba(255, 255, 255, 0.05);
-    border: 1px solid var(--c-border);
-    padding: 2px 10px;
+    background-color: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 3px 10px;
     border-radius: 4px;
     font-size: 0.7rem;
-    color: var(--c-text-muted);
+    color: #a0a0b8;
     width: 100%;
 }
 
@@ -1036,7 +1037,6 @@ button {
     height: 180px;
     overflow: hidden;
     background-color: #05050d;
-    border-bottom: 1px solid var(--c-border);
 }
 
 .case-card__img {
@@ -1044,6 +1044,7 @@ button {
     height: 100%;
     object-fit: cover;
     object-position: top center;
+    display: block;
     transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
 

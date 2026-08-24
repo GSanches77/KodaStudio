@@ -256,7 +256,7 @@ document.addEventListener('DOMContentLoaded', () => {
         let deleting = false;
 
         const render = (str) => {
-            accentEl.textContent = str;
+            accentEl.textContent = str || '\u00A0';
         };
 
         const type = () => {

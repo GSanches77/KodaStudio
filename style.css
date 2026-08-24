@@ -923,6 +923,7 @@ button {
 .hero__typed {
     display: block;
     color: var(--c-accent);
+    min-height: 1.1em;
 }
 
 /* ==========================================================================

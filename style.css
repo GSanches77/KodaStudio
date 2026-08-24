@@ -47,6 +47,7 @@ html {
     scroll-behavior: smooth;
     font-size: 16px;
     width: 100%;
+    touch-action: pan-y;
 }
 
 body {
@@ -55,14 +56,16 @@ body {
     color: var(--c-text);
     line-height: 1.6;
     width: 100%;
-    overflow-x: hidden;
+    overflow-x: clip;
+    touch-action: pan-y;
     position: relative;
     -webkit-font-smoothing: antialiased;
 }
 
 main {
     width: 100%;
-    overflow-x: hidden;
+    overflow-x: clip;
+    touch-action: pan-y;
 }
 
 a {
@@ -887,6 +890,7 @@ button {
     transform-origin: left center;
     transform: scaleX(0);
     z-index: 9999;
+    pointer-events: none;
     transition: transform 0.1s linear;
     box-shadow: 0 0 8px rgba(0, 218, 255, 0.6);
 }

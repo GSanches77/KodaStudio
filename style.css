@@ -267,9 +267,11 @@ button {
 }
 
 .hero__title {
-    font-size: clamp(3rem, 8vw, 6rem);
+    display: flex;
+    flex-direction: column;
+    font-size: clamp(2.5rem, 6vw, 5rem);
     font-weight: 900;
-    line-height: 1;
+    line-height: 1.1;
     letter-spacing: -0.03em;
     margin-bottom: var(--s-4);
     text-transform: uppercase;
@@ -765,17 +767,10 @@ button {
     }
 
     .hero__title {
-        font-size: clamp(2.2rem, 9vw, 3.8rem);
+        font-size: clamp(2rem, 8.5vw, 3.5rem);
+        line-height: 1.1;
         word-break: break-word;
         overflow-wrap: break-word;
-    }
-
-    .hero__typed-wrap {
-        height: 1.15em;
-        min-height: 1.15em;
-        margin-top: 0.1em;
-        margin-bottom: 0.15em;
-        word-break: break-word;
     }
 
     .dataviz {
@@ -924,22 +919,10 @@ button {
     z-index: 1;
 }
 
-/* Typed word wrapper — reserves space for changing text, never shifts layout */
-.hero__typed-wrap {
-    display: block;
-    position: relative;
-    height: 1.15em;
-    line-height: 1.1;
-    margin-top: 0.1em;
-    margin-bottom: 0.15em;
-}
-
-/* Typed word — absolutely positioned so it never affects surrounding layout */
+/* Typed word — styled accent line */
 .hero__typed {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
+    display: block;
+    color: var(--c-accent);
 }
 
 /* ==========================================================================

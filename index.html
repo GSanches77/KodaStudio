@@ -41,7 +41,7 @@
     <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16x16.png">
     <link rel="manifest" href="assets/site.webmanifest">
-    <link rel="stylesheet" href="style.min.css">
+    <link rel="stylesheet" href="style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800;900&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
@@ -132,8 +132,14 @@
                         digital do seu negócio de ponta a ponta.
                     </p>
                     <div class="hero__actions">
-                        <a href="https://wa.me/5511947090626" target="_blank" class="btn btn--primary" onclick="trackWhatsAppClick()">Iniciar
-                            Projeto</a>
+                        <a href="https://wa.me/5511947090626" target="_blank" class="btn btn--primary" onclick="trackWhatsAppClick()">Iniciar Projeto</a>
+                        <a href="#cases" class="btn btn--ghost">
+                            Ver Cases
+                            <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                                <polyline points="12 5 19 12 12 19"></polyline>
+                            </svg>
+                        </a>
                     </div>
                 </div>
 
@@ -357,7 +363,7 @@
                     <h2 class="section__title">Nossa Metodologia</h2>
                     <ul class="method-list">
                         <li class="method-list__item">
-                            <div class="method-list__number">01</div>
+                            <div class="method-list__step" aria-hidden="true">01</div>
                             <div class="method-list__text">
                                 <h3>Diagnóstico</h3>
                                 <p>Ouvimos o seu negócio a fundo antes de criar qualquer coisa. Mapeamos seus clientes,
@@ -365,7 +371,7 @@
                             </div>
                         </li>
                         <li class="method-list__item">
-                            <div class="method-list__number">02</div>
+                            <div class="method-list__step" aria-hidden="true">02</div>
                             <div class="method-list__text">
                                 <h3>Execução</h3>
                                 <p>Desenvolvemos o seu website, identidade visual e estratégias de tráfego pago com velocidade e
@@ -373,7 +379,7 @@
                             </div>
                         </li>
                         <li class="method-list__item">
-                            <div class="method-list__number">03</div>
+                            <div class="method-list__step" aria-hidden="true">03</div>
                             <div class="method-list__text">
                                 <h3>Resultados</h3>
                                 <p>Todo mês você recebe um relatório claro com o que aconteceu: acessos, engajamento e
@@ -459,8 +465,8 @@
                 <div class="faq__list">
                     <details class="faq__item js-reveal" name="faq">
                         <summary class="faq__question">
-                            <span>1. Quanto tempo demora para o meu site ficar pronto?</span>
-                            <span class="faq__toggle">+</span>
+                            <span>Quanto tempo demora para o meu site ficar pronto?</span>
+                            <svg class="faq__toggle" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
                         </summary>
                         <div class="faq__answer">
                             <p>Para uma Landing Page focada em conversão, o prazo é de 7 a 14 dias. Para sites
@@ -472,8 +478,8 @@
 
                     <details class="faq__item js-reveal delay-1" name="faq">
                         <summary class="faq__question">
-                            <span>2. Eu tenho que pagar alguma mensalidade depois de pronto?</span>
-                            <span class="faq__toggle">+</span>
+                            <span>Eu tenho que pagar alguma mensalidade depois de pronto?</span>
+                            <svg class="faq__toggle" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
                         </summary>
                         <div class="faq__answer">
                             <p>Não temos taxas ocultas nem contratos abusivos de desenvolvimento. O único custo
@@ -486,8 +492,8 @@
 
                     <details class="faq__item js-reveal delay-2" name="faq">
                         <summary class="faq__question">
-                            <span>3. Eu preciso fornecer as imagens e os textos do site?</span>
-                            <span class="faq__toggle">+</span>
+                            <span>Eu preciso fornecer as imagens e os textos do site?</span>
+                            <svg class="faq__toggle" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
                         </summary>
                         <div class="faq__answer">
                             <p>Você não precisa travar o projeto por isso. Se já tiver fotos profissionais e textos, nós
@@ -499,8 +505,8 @@
 
                     <details class="faq__item js-reveal delay-3" name="faq">
                         <summary class="faq__question">
-                            <span>4. O site será realmente meu?</span>
-                            <span class="faq__toggle">+</span>
+                            <span>O site será realmente meu?</span>
+                            <svg class="faq__toggle" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
                         </summary>
                         <div class="faq__answer">
                             <p>Sim, 100% da propriedade é sua. Diferente de agências que retêm os acessos, aqui, após a
@@ -512,8 +518,8 @@
 
                     <details class="faq__item js-reveal delay-4" name="faq">
                         <summary class="faq__question">
-                            <span>5. Como vou saber se o site está dando resultado ou recebendo acessos?</span>
-                            <span class="faq__toggle">+</span>
+                            <span>Como vou saber se o site está dando resultado?</span>
+                            <svg class="faq__toggle" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
                         </summary>
                         <div class="faq__answer">
                             <p>Não entregamos um "panfleto digital morto". Seu site já sai de fábrica com ferramentas de

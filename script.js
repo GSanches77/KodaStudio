@@ -1,6 +1,6 @@
 /**
- * KODA STUDIO - MAIN SCRIPTS
- * Vanilla JS Performance-First Approach
+ * KODA STUDIO — MAIN SCRIPTS v2
+ * Vanilla JS, performance-first, prefers-reduced-motion respected throughout
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -35,21 +35,19 @@ document.addEventListener('DOMContentLoaded', () => {
     // 2. Dynamic Header + Scroll Progress Bar
     // =========================================================================
     const header = document.querySelector('.js-header');
-
-    // Inject scroll progress bar
     const progressBar = document.createElement('div');
     progressBar.className = 'scroll-progress';
+    progressBar.setAttribute('role', 'progressbar');
+    progressBar.setAttribute('aria-hidden', 'true');
     document.body.prepend(progressBar);
 
     const handleScroll = () => {
-        // Header state
         if (window.scrollY > 50) {
             header.classList.add('is-scrolled');
         } else {
             header.classList.remove('is-scrolled');
         }
 
-        // Scroll progress
         const docHeight = document.documentElement.scrollHeight - window.innerHeight;
         const progress = docHeight > 0 ? (window.scrollY / docHeight) * 100 : 0;
         progressBar.style.transform = `scaleX(${progress / 100})`;
@@ -64,12 +62,51 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             isScrolling = true;
         }
-    });
+    }, { passive: true });
 
     handleScroll();
 
     // =========================================================================
-    // 3. Scroll Reveal via IntersectionObserver
+    // 3. Hero — Stagger de entrada nos spans do h1 + desc + actions
+    //    Focal moment: o único momento orquestrado da página
+    // =========================================================================
+    const heroContent = document.querySelector('.hero__content');
+    const heroTitleSpans = document.querySelectorAll('.hero__title span');
+    const heroDesc = document.querySelector('.hero__desc');
+    const heroActions = document.querySelector('.hero__actions');
+
+    if (heroContent && !prefersReduced) {
+        // Stagger: span 0 → 0ms, span 1 → 80ms, span 2 → 160ms
+        heroTitleSpans.forEach((span, i) => {
+            span.style.transitionDelay = `${i * 0.08}s`;
+            // Pequeno delay para garantir que a transição CSS dispare
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                    span.classList.add('is-visible');
+                });
+            });
+        });
+
+        if (heroDesc) heroDesc.classList.add('is-visible');
+        if (heroActions) heroActions.classList.add('is-visible');
+    } else {
+        // Sem animação: mostrar imediatamente
+        heroTitleSpans.forEach(span => {
+            span.style.opacity = '1';
+            span.style.transform = 'none';
+        });
+        if (heroDesc) {
+            heroDesc.style.opacity = '1';
+            heroDesc.style.transform = 'none';
+        }
+        if (heroActions) {
+            heroActions.style.opacity = '1';
+            heroActions.style.transform = 'none';
+        }
+    }
+
+    // =========================================================================
+    // 4. Scroll Reveal via IntersectionObserver
     // =========================================================================
     const revealElements = document.querySelectorAll('.js-reveal');
 
@@ -80,12 +117,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 observer.unobserve(entry.target);
             }
         });
-    }, { root: null, rootMargin: '0px 0px -80px 0px', threshold: 0.1 });
+    }, { root: null, rootMargin: '0px 0px -60px 0px', threshold: 0.1 });
 
     revealElements.forEach(el => revealObserver.observe(el));
 
     // =========================================================================
-    // 4. Service Cards — dynamic stagger on scroll entry
+    // 5. Service Cards — stagger no scroll
     // =========================================================================
     const serviceCards = document.querySelectorAll('.service-card');
 
@@ -96,16 +133,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 const idx = cards.indexOf(entry.target);
                 setTimeout(() => {
                     entry.target.classList.add('is-visible');
-                }, idx * 80);
+                }, idx * 70);
                 observer.unobserve(entry.target);
             }
         });
-    }, { rootMargin: '0px 0px -60px 0px', threshold: 0.1 });
+    }, { rootMargin: '0px 0px -50px 0px', threshold: 0.1 });
 
     serviceCards.forEach(card => cardsObserver.observe(card));
 
     // =========================================================================
-    // 5. Method list items — staggered reveal
+    // 6. Method list items — stagger reveal
     // =========================================================================
     const methodItems = document.querySelectorAll('.method-list__item');
 
@@ -116,11 +153,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 const idx = items.indexOf(entry.target);
                 setTimeout(() => {
                     entry.target.classList.add('is-visible');
-                }, idx * 150);
+                }, idx * 120);
                 observer.unobserve(entry.target);
             }
         });
-    }, { rootMargin: '0px 0px -60px 0px', threshold: 0.15 });
+    }, { rootMargin: '0px 0px -50px 0px', threshold: 0.1 });
 
     methodItems.forEach(item => {
         item.classList.add('js-method-item');
@@ -128,7 +165,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // =========================================================================
-    // 6. Data-Viz Animation (Hero Section)
+    // 7. Data-Viz Animation (Hero)
     // =========================================================================
     const datavizVisual = document.querySelector('.hero__visual');
     const counterEl = document.querySelector('.js-counter');
@@ -139,29 +176,32 @@ document.addEventListener('DOMContentLoaded', () => {
         if (datavizAnimated) return;
         datavizAnimated = true;
 
-        if (counterEl) {
+        if (counterEl && !prefersReduced) {
             const target = parseInt(counterEl.getAttribute('data-target'), 10);
-            const duration = 2000;
-            const fps = 60;
-            const frames = duration / (1000 / fps);
-            const increment = target / frames;
-            let current = 0;
+            const duration = 1800;
+            const start = performance.now();
 
-            const counterInterval = setInterval(() => {
-                current += increment;
-                if (current >= target) {
-                    counterEl.textContent = target.toLocaleString('en-US');
-                    clearInterval(counterInterval);
-                } else {
-                    counterEl.textContent = Math.floor(current).toLocaleString('en-US');
-                }
-            }, 1000 / fps);
+            const easeOut = t => 1 - Math.pow(1 - t, 3);
+
+            const tick = (now) => {
+                const elapsed = now - start;
+                const progress = Math.min(elapsed / duration, 1);
+                const value = Math.floor(easeOut(progress) * target);
+                counterEl.textContent = value.toLocaleString('pt-BR');
+                if (progress < 1) requestAnimationFrame(tick);
+                else counterEl.textContent = target.toLocaleString('pt-BR');
+            };
+
+            requestAnimationFrame(tick);
+        } else if (counterEl) {
+            const target = parseInt(counterEl.getAttribute('data-target'), 10);
+            counterEl.textContent = target.toLocaleString('pt-BR');
         }
 
         chartBars.forEach((bar, index) => {
             setTimeout(() => {
                 bar.classList.add('is-animated');
-            }, index * 100);
+            }, index * 90);
         });
     };
 
@@ -169,17 +209,17 @@ document.addEventListener('DOMContentLoaded', () => {
         const datavizObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
-                    setTimeout(animateDataViz, 400);
+                    setTimeout(animateDataViz, 300);
                     datavizObserver.unobserve(entry.target);
                 }
             });
-        }, { threshold: 0.5 });
+        }, { threshold: 0.4 });
 
         datavizObserver.observe(datavizVisual);
     }
 
     // =========================================================================
-    // 7. Hero Cursor Glow Tracker
+    // 8. Hero Cursor Glow Tracker
     // =========================================================================
     if (!prefersReduced) {
         const hero = document.querySelector('.hero');
@@ -187,6 +227,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (hero) {
             const glow = document.createElement('div');
             glow.className = 'hero-glow';
+            glow.setAttribute('aria-hidden', 'true');
             hero.appendChild(glow);
 
             let glowX = 0, glowY = 0;
@@ -200,8 +241,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 if (!rafId) {
                     rafId = requestAnimationFrame(function animate() {
-                        glowX += (targetX - glowX) * 0.08;
-                        glowY += (targetY - glowY) * 0.08;
+                        glowX += (targetX - glowX) * 0.07;
+                        glowY += (targetY - glowY) * 0.07;
                         glow.style.transform = `translate(${glowX}px, ${glowY}px) translate(-50%, -50%)`;
 
                         if (Math.abs(targetX - glowX) > 0.5 || Math.abs(targetY - glowY) > 0.5) {
@@ -211,10 +252,14 @@ document.addEventListener('DOMContentLoaded', () => {
                         }
                     });
                 }
-            });
+            }, { passive: true });
 
             hero.addEventListener('mouseleave', () => {
                 glow.style.opacity = '0';
+                if (rafId) {
+                    cancelAnimationFrame(rafId);
+                    rafId = null;
+                }
             });
 
             hero.addEventListener('mouseenter', () => {
@@ -224,7 +269,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // =========================================================================
-    // 8. Magnetic CTA Button
+    // 9. Magnetic CTA Button
     // =========================================================================
     if (!prefersReduced) {
         const ctaBtn = document.querySelector('.hero__actions .btn--primary');
@@ -234,69 +279,100 @@ document.addEventListener('DOMContentLoaded', () => {
                 const rect = ctaBtn.getBoundingClientRect();
                 const cx = rect.left + rect.width / 2;
                 const cy = rect.top + rect.height / 2;
-                const dx = (e.clientX - cx) * 0.35;
-                const dy = (e.clientY - cy) * 0.35;
+                const dx = (e.clientX - cx) * 0.3;
+                const dy = (e.clientY - cy) * 0.3;
                 ctaBtn.style.transform = `translate(${dx}px, ${dy}px)`;
             });
 
             ctaBtn.addEventListener('mouseleave', () => {
-                ctaBtn.style.transform = 'translate(0, 0)';
+                ctaBtn.style.transform = '';
             });
         }
     }
 
     // =========================================================================
-    // 9. Typed text effect — hero title accent word cycles
+    // 10. Typed text effect — hero accent word cycles
+    //     Transição imperceptível: apaga e reescreve sem cursor piscante
     // =========================================================================
     if (!prefersReduced) {
         const accentEl = document.querySelector('.hero__typed');
-        const words = ['do seu negócio', 'da sua marca', 'da sua empresa', 'do seu futuro'];
-        let wordIndex = 0;
-        let charIndex = 0;
-        let deleting = false;
+        if (accentEl) {
+            const words = ['do seu negócio', 'da sua marca', 'da sua empresa', 'do seu futuro'];
+            let wordIndex = 0;
+            let charIndex = 0;
+            let deleting = false;
 
-        const render = (str) => {
-            accentEl.textContent = str || '\u00A0';
-        };
+            const render = (str) => {
+                accentEl.textContent = str || '\u00A0';
+            };
 
-        const type = () => {
-            const current = words[wordIndex];
+            const type = () => {
+                const current = words[wordIndex];
 
-            if (deleting) {
-                charIndex--;
-            } else {
-                charIndex++;
-            }
+                if (deleting) {
+                    charIndex--;
+                } else {
+                    charIndex++;
+                }
 
-            render(current.substring(0, charIndex));
+                render(current.substring(0, charIndex));
 
-            let speed = deleting ? 50 : 90;
+                let speed = deleting ? 40 : 80;
 
-            if (!deleting && charIndex === current.length) {
-                speed = 2200;
-                deleting = true;
-            } else if (deleting && charIndex === 0) {
-                deleting = false;
-                wordIndex = (wordIndex + 1) % words.length;
-                speed = 300;
-            }
+                if (!deleting && charIndex === current.length) {
+                    speed = 2400;
+                    deleting = true;
+                } else if (deleting && charIndex === 0) {
+                    deleting = false;
+                    wordIndex = (wordIndex + 1) % words.length;
+                    speed = 280;
+                }
 
-            setTimeout(type, speed);
-        };
+                setTimeout(type, speed);
+            };
 
-        // Pre-fill first word instantly, then start erasing after pause
-        render(words[0]);
-        charIndex = words[0].length;
-        deleting = true;
-        setTimeout(type, 2200);
+            render(words[0]);
+            charIndex = words[0].length;
+            deleting = true;
+            setTimeout(type, 2400);
+        }
     }
+
+    // =========================================================================
+    // 11. Status badge — "Ao Vivo" blink mais natural
+    // =========================================================================
+    const statusBadge = document.querySelector('.js-status');
+    if (statusBadge) {
+        // Já controlado por CSS animation: blink — sem overhead JS
+    }
+
+    // =========================================================================
+    // 12. Nav link active state no scroll (highlight atual)
+    // =========================================================================
+    const sections = document.querySelectorAll('section[id]');
+    const navLinksList = document.querySelectorAll('.nav__link');
+
+    const sectionObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const id = entry.target.getAttribute('id');
+                navLinksList.forEach(link => {
+                    link.classList.toggle('is-active', link.getAttribute('href') === `#${id}`);
+                });
+            }
+        });
+    }, { rootMargin: '-40% 0px -55% 0px', threshold: 0 });
+
+    sections.forEach(section => sectionObserver.observe(section));
 
 });
 
 // Google Tag Manager Event Tracking
 function trackWhatsAppClick() {
-    gtag('event', 'whatsapp_click', {
-        event_category: 'Contato',
-        event_label: 'Botao WhatsApp'
-    });
+    if (typeof gtag === 'function') {
+        gtag('event', 'whatsapp_click', {
+            event_category: 'Contato',
+            event_label: 'Botao WhatsApp'
+        });
+    }
 }

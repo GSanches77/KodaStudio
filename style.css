@@ -497,6 +497,17 @@ input, textarea {
     transform: translateY(0);
 }
 
+/* 3D Canvas de Partículas / Malha de Conexões da Hero */
+.hero-canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.7;
+}
+
 /* Data-Viz Visual */
 .hero__visual {
     position: relative;
@@ -504,6 +515,107 @@ input, textarea {
     align-items: center;
     justify-content: center;
     z-index: 1;
+    perspective: 1200px;
+}
+
+/* Micro-Badges Flutuantes 3D no Dataviz */
+.dataviz-badge {
+    position: absolute;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 12px;
+    background: rgba(10, 10, 20, 0.88);
+    border: 1px solid var(--c-border);
+    box-shadow: 0 14px 34px rgba(0, 0, 0, 0.65), 0 0 0 1px rgba(0, 218, 255, 0.2);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    font-size: var(--text-xs);
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: var(--c-text);
+    z-index: 3;
+    pointer-events: none;
+    border-radius: var(--radius-sm);
+    will-change: transform;
+}
+
+.dataviz-badge--lead {
+    top: -16px;
+    right: -10px;
+    animation: floatBadgeTop 6s ease-in-out infinite;
+}
+
+.dataviz-badge--roas {
+    bottom: -16px;
+    left: -10px;
+    color: var(--c-accent);
+    animation: floatBadgeBottom 7s ease-in-out infinite;
+}
+
+.badge-pulse-dot {
+    width: 7px;
+    height: 7px;
+    background-color: #27c93f;
+    border-radius: 50%;
+    position: relative;
+    flex-shrink: 0;
+}
+
+.badge-pulse-dot::after {
+    content: '';
+    position: absolute;
+    inset: -3px;
+    border-radius: 50%;
+    background-color: rgba(39, 201, 63, 0.6);
+    animation: pulsePing 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+@keyframes pulsePing {
+    0% { transform: scale(0.9); opacity: 0.9; }
+    80%, 100% { transform: scale(2.4); opacity: 0; }
+}
+
+.badge-time {
+    color: var(--c-accent);
+    font-size: 0.625rem;
+    padding: 1px 5px;
+    background: rgba(0, 218, 255, 0.12);
+    border-radius: 2px;
+    margin-left: 2px;
+}
+
+@keyframes floatBadgeTop {
+    0%, 100% {
+        transform: translateY(0px) rotate(0.5deg);
+    }
+    50% {
+        transform: translateY(-8px) rotate(-1deg);
+    }
+}
+
+@keyframes floatBadgeBottom {
+    0%, 100% {
+        transform: translateY(0px) rotate(-0.5deg);
+    }
+    50% {
+        transform: translateY(7px) rotate(1deg);
+    }
+}
+
+@media (max-width: 600px) {
+    .dataviz-badge--lead {
+        top: -12px;
+        right: 4px;
+        padding: 5px 8px;
+        font-size: 0.6875rem;
+    }
+    .dataviz-badge--roas {
+        bottom: -12px;
+        left: 4px;
+        padding: 5px 8px;
+        font-size: 0.6875rem;
+    }
 }
 
 .dataviz {
@@ -518,6 +630,8 @@ input, textarea {
     position: relative;
     /* Sombra sofisticada — depth sem brutalismo */
     box-shadow: var(--shadow-surface);
+    transform-style: preserve-3d;
+    transition: transform var(--transition-fast);
 }
 
 /* Linha de acento top — detalhe sutil de interface */
@@ -561,6 +675,20 @@ input, textarea {
     display: grid;
     grid-template-columns: 1fr;
     gap: var(--s-4);
+}
+
+.dataviz__metrics-row {
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr;
+    gap: var(--s-3);
+    align-items: flex-end;
+}
+
+@media (max-width: 440px) {
+    .dataviz__metrics-row {
+        grid-template-columns: 1fr;
+        gap: var(--s-2);
+    }
 }
 
 .dataviz__metric {
@@ -612,6 +740,8 @@ input, textarea {
 .dataviz__footer {
     display: flex;
     justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
     font-size: var(--text-xs);
     color: var(--c-text-subtle);
 }
@@ -695,18 +825,41 @@ input, textarea {
     background-color: var(--c-bg);
     border: 1px solid var(--c-border);
     padding: var(--s-6) var(--s-4);
+    position: relative;
+    overflow: hidden;
+    transform-style: preserve-3d;
+    will-change: transform;
     transition:
-        transform var(--transition-fast),
         border-color var(--transition-fast),
         background-color var(--transition-fast),
         box-shadow var(--transition-fast);
 }
 
+/* Reflexo Especular 3D (Holográfico) guiado pelo cursor */
+.service-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.35s ease;
+    background: radial-gradient(
+        500px circle at var(--mouse-x, -500px) var(--mouse-y, -500px),
+        rgba(0, 218, 255, 0.15) 0%,
+        rgba(0, 218, 255, 0.03) 40%,
+        transparent 70%
+    );
+    z-index: 2;
+}
+
+.service-card:hover::after {
+    opacity: 1;
+}
+
 .service-card:hover {
-    transform: translateY(-4px);
-    border-color: rgba(0, 218, 255, 0.35);
-    background-color: rgba(10, 10, 20, 0.8);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    border-color: rgba(0, 218, 255, 0.45);
+    background-color: rgba(10, 10, 20, 0.85);
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5), 0 0 24px rgba(0, 218, 255, 0.08);
 }
 
 .service-card:focus-within {
@@ -755,17 +908,39 @@ input, textarea {
     display: flex;
     flex-direction: column;
     position: relative;
+    overflow: hidden;
+    transform-style: preserve-3d;
+    will-change: transform;
     transition:
-        transform var(--transition-mid),
         border-color var(--transition-mid),
         box-shadow var(--transition-mid);
     box-shadow: var(--shadow-card);
 }
 
+/* Reflexo Especular 3D nos Cases */
+.case-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.35s ease;
+    background: radial-gradient(
+        600px circle at var(--mouse-x, -500px) var(--mouse-y, -500px),
+        rgba(0, 218, 255, 0.12) 0%,
+        rgba(0, 218, 255, 0.02) 40%,
+        transparent 70%
+    );
+    z-index: 2;
+}
+
+.case-card:hover::after {
+    opacity: 1;
+}
+
 .case-card:hover {
-    transform: translateY(-6px);
-    border-color: rgba(0, 218, 255, 0.3);
-    box-shadow: var(--shadow-card-hover);
+    border-color: rgba(0, 218, 255, 0.45);
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.6), 0 0 24px rgba(0, 218, 255, 0.08);
 }
 
 .case-card__window {
@@ -928,6 +1103,31 @@ input, textarea {
     gap: 0;
     margin-top: var(--s-8);
     position: relative;
+}
+
+/* Feixe de energia que viaja pela metodologia */
+.method-list::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(0, 218, 255, 0.85) 50%,
+        transparent 100%
+    );
+    background-size: 200% 100%;
+    animation: beamSweep 4.5s linear infinite;
+    pointer-events: none;
+    z-index: 2;
+}
+
+@keyframes beamSweep {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
 }
 
 /* Linha conectora vertical — apenas desktop via media query */
@@ -1449,9 +1649,11 @@ input, textarea {
         box-shadow var(--transition-fast);
 }
 
-.service-card.is-visible {
+.service-card.is-visible,
+.case-card.is-visible {
     opacity: 1;
     transform: translateY(0);
+    transition-delay: 0s !important;
 }
 
 /* Method list items — stagger via JS */
@@ -1474,6 +1676,39 @@ input, textarea {
 .delay-3 { transition-delay: 0.24s; }
 .delay-4 { transition-delay: 0.32s; }
 .delay-5 { transition-delay: 0.40s; }
+
+/* ==========================================================================
+   ANIMAÇÃO 3D CONTÍNUA & SUTIL PARA DISPOSITIVOS MÓVEIS (Touch / No Hover)
+   ========================================================================== */
+@media (hover: none) {
+    .service-card {
+        animation: mobileCardFloat 6.5s ease-in-out infinite;
+    }
+    .service-card:nth-child(2) {
+        animation-delay: -1.6s;
+    }
+    .service-card:nth-child(3) {
+        animation-delay: -3.2s;
+    }
+    .service-card:nth-child(4) {
+        animation-delay: -4.8s;
+    }
+    .case-card {
+        animation: mobileCardFloat 7.5s ease-in-out infinite;
+    }
+    .case-card:nth-child(2) {
+        animation-delay: -3.75s;
+    }
+}
+
+@keyframes mobileCardFloat {
+    0%, 100% {
+        transform: perspective(800px) rotateX(0deg) rotateY(0deg) translateY(0);
+    }
+    50% {
+        transform: perspective(800px) rotateX(2.4deg) rotateY(-1.8deg) translateY(-4px);
+    }
+}
 
 /* ==========================================================================
    REDUCED MOTION
